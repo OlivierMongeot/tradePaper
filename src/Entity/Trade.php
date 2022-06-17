@@ -60,6 +60,21 @@ class Trade
      */
     private $created_at;
 
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $order_mount;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $note;
+
+    /**
+     * @ORM\Column(type="decimal", precision=12, scale=10)
+     */
+    private $qty;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -157,6 +172,47 @@ class Trade
     public function setCreatedAt(\DateTimeImmutable $created_at): self
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getOrderMount(): ?float
+    {
+        return $this->order_mount;
+    }
+
+    public function setOrderMount(?float $order_mount): self
+    {
+        $this->order_mount = $order_mount;
+
+        return $this;
+    }
+
+    public function getNote(): ?string
+    {
+        return $this->note;
+    }
+
+    public function setNote(?string $note): self
+    {
+        $this->note = $note;
+
+        return $this;
+    }
+
+    public function getFullMount(): ?float
+    {
+        return $this->getQuantity() * $this->getTokenPriceTransaction();
+    }
+
+    public function getQty(): ?string
+    {
+        return $this->qty;
+    }
+
+    public function setQty(string $qty): self
+    {
+        $this->qty = $qty;
 
         return $this;
     }
