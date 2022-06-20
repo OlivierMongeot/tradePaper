@@ -216,4 +216,8 @@ class Trade
 
         return $this;
     }
+
+ 
+
+
 }

@@ -22,11 +22,11 @@ class TokenType extends AbstractType
                     'class' => 'form-control'
                 ]
             ])
-            ->add('Valider',SubmitType::class,[
-                'attr' => [
-                    'class' => 'btn btn-primary'
-                ]
-            ])
+            // ->add('Valider',SubmitType::class,[
+            //     'attr' => [
+            //         'class' => 'btn btn-primary'
+            //     ]
+            // ])
         ;
     }
 

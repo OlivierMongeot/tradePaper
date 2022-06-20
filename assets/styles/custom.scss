@@ -1,5 +1,20 @@
-// $primary : #FFBE0B;
-// $secondary : #FB5607;
+$primary: #FFBE0B;
+$secondary: #000000;
 // $success : #3A86FF;
 // $info : #FF006E;
 // $light : #8338EC;
+body>div.container>main>div>div>table>tbody>tr>td.balance-result.green {
+    background-color: #000000!important;
+    color: #80f894!important;
+    font-weight: bold;
+}
+
+body>div.container>main>div>div>table>tbody>tr>td.balance-result.red {
+    background-color: #000000!important;
+    color: #FFBE0B!important;
+    font-weight: bold;
+}
+
+.title-center {
+    text-align: center;
+}
