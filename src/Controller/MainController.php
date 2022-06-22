@@ -4,9 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Token;
 use App\Entity\Trade;
-use App\Form\TradeType;
-use App\Entity\Exchange;
 use App\Entity\TotalTrade;
+use App\Entity\Configuration;
+use App\Parser\TradeAgregator;
+use App\Form\ConfigurationType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,113 +20,50 @@ class MainController extends AbstractController
      */
     public function index(Request $request): Response
     {
-        $trade = new Trade();
-        $form = $this->createForm(TradeType::class, $trade);
+        // Configure form
+        $config = new Configuration();
+        $form = $this->createForm(ConfigurationType::class, $config);
         $form->handleRequest($request);
+
         $entityManager = $this->getDoctrine()->getManager();
-        $trade = $entityManager->getRepository(Trade::class)->findAll();
-        // inject Token and entities to form
-        $token = $entityManager->getRepository(Token::class)->findAll();
-        $totalTrade = $entityManager->getRepository(TotalTrade::class)->findAll();
-        // Make assoc array with token , sell and buy
-        $totalTokensTrades = [];
-        foreach ($totalTrade as $trade) {
-            // dump($trade);
-            $totalTokensTrades[$trade->getToken()]['sell'] = $trade->getSell();
-            $totalTokensTrades[$trade->getToken()]['buy'] = $trade->getBuy();
-            $totalTokensTrades[$trade->getToken()]['balance'] = $trade->getBalance();
-        }
-        // dd($totalTokensTrades);
-        //  dd($token);
+
+        $allTrades = $entityManager->getRepository(Trade::class)->findAll();
+
+        $agregator = new TradeAgregator();
+        $tradesByToken = $agregator->agregateData($allTrades);
+ 
+
         if ($form->isSubmitted() && $form->isValid()) {
 
+            // Persist the last configuration (index 0)
+            $configuration = $entityManager->getRepository(Configuration::class)->findAll();
+            $configuration[0]->setStartDate($config->getStartDate());
+            $configuration[0]->setEndDate($config->getEndDate());
+            $configuration[0]->setToken($config->getToken());
+            $configuration[0]->setExchange($config->getExchange());
+            $entityManager->persist($configuration[0]);
+            $entityManager->flush();
+
+
             // Make Select request to Data Base (Trade Entity) with parameters from form
-            $trade = $form->getData();
+            $allTrades = $entityManager->getRepository(Trade::class)->getBetweenDates($config->getStartDate(), $config->getEndDate(), $config->getToken(), $config->getExchange());
+            $agregator = new TradeAgregator();
+            $tradesByToken = $agregator->agregateData($allTrades);
+     
 
-            if ($trade->getAction() == null && $trade->getToken() == null && $trade->getExchange() == null) {
-
-                $trade = $entityManager->getRepository(Trade::class)->findAll();
-            } else if ($trade->getAction() == null && $trade->getToken() !== null && $trade->getExchange() !== null) {
-
-                $trade = $entityManager->getRepository(Trade::class)->findBy(
-                    [
-                        'token' => $trade->getToken(),
-                        'exchange' => $trade->getExchange(),
-                    ]
-                );
-            } else if ($trade->getAction() !== null && $trade->getToken() == null && $trade->getExchange() !== null) {
-
-                $trade = $entityManager->getRepository(Trade::class)->findBy(
-                    [
-                        'action' => $trade->getAction(),
-                        'exchange' => $trade->getExchange(),
-                    ]
-                );
-            } else if ($trade->getAction() !== null && $trade->getToken() !== null && $trade->getExchange() == null) {
-
-                $trade = $entityManager->getRepository(Trade::class)->findBy(
-                    [
-                        'action' => $trade->getAction(),
-                        'token' => $trade->getToken(),
-                    ]
-                );
-            } else if ($trade->getAction() == null && $trade->getToken() !== null && $trade->getExchange() == null) {
-
-                $trade = $entityManager->getRepository(Trade::class)->findBy(
-                    [
-                        'token' => $trade->getToken(),
-                    ]
-                );
-            } else if ($trade->getAction() == null && $trade->getToken() == null && $trade->getExchange() !== null) {
-
-                $trade = $entityManager->getRepository(Trade::class)->findBy(
-                    [
-                        'exchange' => $trade->getExchange(),
-                    ]
-                );
-            } else if ($trade->getAction() !== null && $trade->getToken() == null && $trade->getExchange() == null) {
-
-                $trade = $entityManager->getRepository(Trade::class)->findBy(
-                    [
-                        'action' => $trade->getAction(),
-                    ]
-                );
-            } else {
-
-                $trade = $entityManager->getRepository(Trade::class)->findBy(
-                    [
-                        'action' => $trade->getAction(),
-                        'token' => $trade->getToken(),
-                        'exchange' => $trade->getExchange(),
-                    ]
-                );
-            }
             return $this->render('main/index.html.twig', [
                 'form' => $form->createView(),
-                'trades' => $trade,
-                'tokens' => $token,
-                'totalTokensTrades' => $totalTokensTrades,
+                'allTrades' => $tradesByToken[0],
+                'totalTrades' => $tradesByToken[1],
+                'configuration' => $configuration[0]
             ]);
-
-            // Search for Trade with token and exchange in parameters
-
-            // If Trade not found, make alert message
-            // if (!$trade) {
-            //     $this->addFlash('danger', 'Trade not found');
-            // }
-            return $this->redirectToRoute('app_main');
         }
 
-
-
         return $this->render('main/index.html.twig', [
-            'controller_name' => 'MainController',
             'form' => $form->createView(),
-            'trades' => $trade,
-            'tokens' => $token,
-            'totalTokensTrades' => $totalTokensTrades,
-            // 'totalSell' => $entityManager->getRepository(Trade::class)->getTotalSell(),
-            // 'totalBuy' => $entityManager->getRepository(Trade::class)->getTotalBuy(),
+            'allTrades' => $tradesByToken[0],
+            'totalTrades' => $tradesByToken[1],
+            'configuration' => []
         ]);
     }
 }

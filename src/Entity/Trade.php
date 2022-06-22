@@ -70,10 +70,12 @@ class Trade
      */
     private $note;
 
+  
+
     /**
-     * @ORM\Column(type="decimal", precision=12, scale=10)
+     * @ORM\Column(type="integer", nullable=true)
      */
-    private $qty;
+    private $IdBuyTransaction;
 
     public function getId(): ?int
     {
@@ -213,6 +215,18 @@ class Trade
     public function setQty(string $qty): self
     {
         $this->qty = $qty;
+
+        return $this;
+    }
+
+    public function getIdBuyTransaction(): ?int
+    {
+        return $this->IdBuyTransaction;
+    }
+
+    public function setIdBuyTransaction(?int $IdBuyTransaction): self
+    {
+        $this->IdBuyTransaction = $IdBuyTransaction;
 
         return $this;
     }

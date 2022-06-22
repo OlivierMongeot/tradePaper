@@ -18,3 +18,22 @@ body>div.container>main>div>div>table>tbody>tr>td.balance-result.red {
 .title-center {
     text-align: center;
 }
+
+.box-trade-total {
+    background-color: #000000;
+    color: #FFBE0B;
+    font-weight: bold;
+    text-align: center;
+    border: 1px solid #ffffff;
+    vertical-align: middle;
+    border-radius: 4px;
+    padding: 5px;
+}
+
+// tfoot>tr {
+//     display: flex;
+//     flex-direction: row;
+//     justify-content: space-between;
+//     text-align: center;
+//     width: 100%;
+// }

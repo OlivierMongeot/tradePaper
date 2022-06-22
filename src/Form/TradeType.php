@@ -10,6 +10,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
@@ -56,8 +57,46 @@ class TradeType extends AbstractType
                     ],
                     'required' => false,
                 ])
+            // add Start Date with default value at start of the year with no class associated
+            // ->add('start_date',
+            //     DateType::class,
+            //     [
+            //         'data_class' => null,
+            //         'label' => 'Start Date',
+            //         'widget' => 'single_text',
+            //         'format' => 'yyyy-MM-dd',
+            //         'attr' => [
+            //             'class' => 'form-control'
+            //         ],
+            //         'required' => false,
+            //         'data' => new \DateTime('first day of January'),
+                    
+
+            //     ])
+            // add End Date with default value at end of the year
+            // ->add('end_date',
+            //     DateType::class,
+            //     [
+            //         'label' => 'End Date',
+            //         'widget' => 'single_text',
+            //         'format' => 'yyyy-MM-dd',
+            //         'attr' => [
+            //             'class' => 'form-control'
+            //         ],
+            //         'required' => false,
+            //         'data' => new \DateTime('last day of December')
+            //     ])
+            // end of add
+            // ->add('submit', SubmitType::class, [
+            //     'attr' => [
+            //         'class' => 'btn btn-primary'
+            //     ]
+            // ])
         ;
     }
+          
+
+        
 
     public function configureOptions(OptionsResolver $resolver): void
     {

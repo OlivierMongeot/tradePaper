@@ -7,6 +7,7 @@ use App\Entity\Trade;
 use App\Entity\Users;
 use App\Entity\Action;
 use App\Entity\Exchange;
+use App\Entity\Configuration;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -38,5 +39,6 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Actions', 'fas fa-list', Action::class);
         yield MenuItem::linkToCrud('Trades', 'fas fa-list', Trade::class);
         yield MenuItem::linkToCrud('Users', 'fa fa-user', Users::class);
+        yield MenuItem::linkToCrud('Configuration', 'fa fa-cog', Configuration::class);
     }
 }

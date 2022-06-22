@@ -29,9 +29,15 @@ class Token
      */
     private $trades;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Configuration::class, mappedBy="token")
+     */
+    private $exchange;
+
     public function __construct()
     {
         $this->trades = new ArrayCollection();
+        $this->exchange = new ArrayCollection();
     }
 
     public function __toString()
@@ -80,6 +86,36 @@ class Token
             // set the owning side to null (unless already changed)
             if ($trade->getToken() === $this) {
                 $trade->setToken(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Configuration>
+     */
+    public function getExchange(): Collection
+    {
+        return $this->exchange;
+    }
+
+    public function addExchange(Configuration $exchange): self
+    {
+        if (!$this->exchange->contains($exchange)) {
+            $this->exchange[] = $exchange;
+            $exchange->setToken($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExchange(Configuration $exchange): self
+    {
+        if ($this->exchange->removeElement($exchange)) {
+            // set the owning side to null (unless already changed)
+            if ($exchange->getToken() === $this) {
+                $exchange->setToken(null);
             }
         }
 

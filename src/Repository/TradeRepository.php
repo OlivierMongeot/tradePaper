@@ -64,34 +64,26 @@ class TradeRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //   calcul Total Sell 
-    // public function getTotalSell($token)
-    // {
-    //     $qb = $this->createQueryBuilder('t');
-    //     $qb->select('SUM(t.amount)')
-    //         ->where('t.action = :action')
-    //         ->andWhere('t.token = :token')
-    //         ->andWhere('t.exchange = :exchange')
-    //         ->setParameter('action', 'sell')
-    //         ->setParameter('token', $token);
-    //     return $qb->getQuery()->getSingleScalarResult();
-    // }
 
-    /**
-     * @return SumOfSelltrade Returns an float of SumOfSelltrade 
-     */
-    public function getSumSell($token): float
+
+
+    // Make special function to make request bettween two dates and with token and exchange
+    public function getBetweenDates($startDate, $endDate, $token, $exchange)
     {
-        dump($token);
-        $sumOfSelltrade = $this->createQueryBuilder('t')
-            ->select('SUM(t.order_mount)')
-            ->where('t.action = :action')
-            ->andWhere('t.token = :token')
-            ->setParameter('action', 'sell')
-            ->setParameter('token', $token)
-            ->getQuery()
-            ->getSingleScalarResult();
-        dd($sumOfSelltrade);
-        return $sumOfSelltrade;
+        $qb = $this->createQueryBuilder('t');
+        $qb->select('t')
+            ->where('t.created_at BETWEEN :startDate AND :endDate');
+        if ($token) {
+            $qb->andWhere('t.token = :token')
+                ->setParameter('token', $token);
+        }
+        if ($exchange) {
+            $qb->andWhere('t.exchange = :exchange')
+                ->setParameter('exchange', $exchange);
+        }
+        $qb->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate);
+
+        return $qb->getQuery()->getResult();
     }
 }
