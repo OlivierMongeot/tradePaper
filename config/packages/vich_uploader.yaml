@@ -1,0 +1,8 @@
+vich_uploader:
+  db_driver: orm
+
+  mappings:
+    token_images:
+      uri_prefix: '%token_images%'
+      upload_destination: '%kernel.project_dir%/public%token_images%'
+      namer: Vich\UploaderBundle\Naming\SmartUniqueNamer

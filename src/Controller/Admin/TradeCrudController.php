@@ -32,10 +32,10 @@ class TradeCrudController extends AbstractCrudController
             DateField::new('created_at')->setFormat('d/M/Y')->setLabel('Date')->setColumns('col-sm-4 col-lg-2 col-xxl-2'),
             AssociationField::new('action')
                 ->setLabel('Action')->setColumns('col-sm-6 col-lg-3 col-xxl-3'),
-            NumberField::new('quantity')->setLabel('Quantity')->setColumns('col-sm-6 col-lg-4 col-xxl-4')->setNumDecimals(7),
+            NumberField::new('quantity')->setLabel('Quantity')->setColumns('col-sm-6 col-lg-4 col-xxl-4')->setNumDecimals(9),
             AssociationField::new('token')
                 ->setLabel('Token')->setColumns('col-sm-6 col-lg-3 col-xxl-3'),
-            MoneyField::new('token_price_transaction')->setCurrency('USD')->setLabel('Token Price')->setColumns('col-sm-6 col-lg-3 col-xxl-3')->setNumDecimals(5),
+            MoneyField::new('token_price_transaction')->setCurrency('USD')->setLabel('Token Price')->setColumns('col-sm-6 col-lg-3 col-xxl-3')->setNumDecimals(6),
             MoneyField::new('fee')->setCurrency('USD')->setColumns('col-sm-6 col-lg-3 col-xxl-3')->setNumDecimals(3)->hideOnIndex(),
             AssociationField::new('exchange')->setColumns('col-sm-6 col-lg-3 col-xxl-3'),
             NumberField::new('IdBuyTransaction')->setColumns('col-sm-6 col-lg-6 col-xxl-6')->setLabel('Id BUY'),

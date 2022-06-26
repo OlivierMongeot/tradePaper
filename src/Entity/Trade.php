@@ -191,8 +191,10 @@ class Trade
     }
 
     public function getNote(): ?string
-    {
-        return $this->note;
+    {   
+        $note = strip_tags($this->note);
+        $note = str_replace("&nbsp;", "", $note);
+        return $note;
     }
 
     public function setNote(?string $note): self

@@ -1,0 +1,177 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello Main Controller!
+{% endblock %}
+
+{% block body %}
+
+	<div class="container">
+		<main>
+
+			<div class="py-5 text-center mt-5">
+				<p class="lead">Choisissez vos options et calculer vos gains en quelques clics.</p>
+			</div>
+			{# {{dump(configuration.token)}} #}
+			{{ form_start(form) }}
+			<div class="row">
+				<div class="col-3">
+					{{ form_row(form.start_date) }}
+				</div>
+				<div class="col-3">
+					{{ form_row(form.end_date) }}
+				</div>
+				<div class="col-3">
+					{{ form_row(form.token) }}
+				</div>
+				<div class="col-3">
+					{{ form_row(form.exchange) }}
+				</div>
+			</div>
+			<br>
+			<div class="col-12 submit-configuration">
+				{{ form_row(form.submit) }}
+			</div>
+			{{ form_end(form) }}
+
+			<br>
+			{# Display  Full Total Sell, Full Total Buy  and total Balance #}
+			<div class="row ">
+				<div class="col-4 box-trade-total">
+					<h4>Total Sell</h4>
+					<p>{{ totalTrades.fullSellTrades| amount }}</p>
+				</div>
+				<div class="col-4 box-trade-total">
+					<h4>Total Buy</h4>
+					<p>{{ totalTrades.fullBuyTrades | amount}}</p>
+				</div>
+				<div class="col-4 box-trade-total">
+					<h4>Total Balance</h4>
+					<p>{{ totalTrades.fullBalanceTrades| amount }}</p>
+				</div>
+			</div>
+			<br>
+
+			{% if allTrades %}
+				{% for tradesByToken in allTrades %}
+
+					<div class="row">
+						<div class="col-12">
+							<h3 class="title-center">{{tradesByToken['token']}}</h3>
+						</div>
+					</div>
+
+					<table class="table table-striped trades">
+						<thead>
+							<tr>
+								<th class="col">ID</th>
+								<th class="col-1">Action</th>
+								<th class="col">Date</th>
+								<th class="col">Exchange</th>
+								<th class="col">Token Price</th>
+								<th class="col">Amount</th>
+								<th class="col-3">Note</th>
+								<th class="col">Quantity</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% if tradesByToken['buy'] is defined %}
+								{% for trade in tradesByToken['buy'] %}
+									<tr>
+										<td>{{ trade.id }}</td>
+										<td>{{ trade.action }}</td>
+										<td>{{ trade.createdAt |date('d-M-Y') }}</td>
+										<td>{{ trade.exchange }}</td>
+										<td>{{ trade.tokenPriceTransaction | amount }}</td>
+										<td>{{ trade.orderMount | amount}}</td>
+										<td class="trades-notes">{{ trade.note }}</td>
+										<td>{{ trade.quantity }}
+											{{tradesByToken['token']}}</td>
+									</tr>
+								{% endfor %}
+							{% endif %}
+						</tbody>
+						<tbody>
+							{% if tradesByToken['sell'] is defined %}
+								{% for trade in tradesByToken['sell'] %}
+									<tr>
+										<td>{{ trade.id }}</td>
+										<td>{{ trade.action }}</td>
+										<td>{{ trade.createdAt |date('d-M-Y') }}</td>
+										<td>{{ trade.exchange }}</td>
+										<td>{{ trade.tokenPriceTransaction | amount }}</td>
+										<td>{{ trade.orderMount | amount}}</td>
+										<td class="trades-notes">{{ trade.note }}</td>
+										<td>{{ trade.quantity }}
+											{{tradesByToken['token']}}</td>
+									</tr>
+								{% endfor %}
+							{% endif %}
+						</tbody>
+						<tbody>
+							{% if tradesByToken['earn'] is defined %}
+								{% for trade in tradesByToken['earn'] %}
+									<tr>
+										<td>{{ trade.id }}</td>
+										<td>{{ trade.action }}</td>
+										<td>{{ trade.createdAt |date('d-M-Y') }}</td>
+										<td>{{ trade.exchange }}</td>
+										<td>{{ trade.tokenPriceTransaction | amount }}</td>
+										<td>{{ trade.orderMount | amount}}</td>
+										<td class="trades-notes">{{ trade.note }}</td>
+										<td>{{ trade.quantity }}
+											{{tradesByToken['token']}}</td>
+									</tr>
+								{% endfor %}
+							{% endif %}
+						</tbody>
+						<tbody>
+							{% if tradesByToken['transfer'] is defined %}
+								{% for trade in tradesByToken['transfer'] %}
+									<tr>
+										<td>{{ trade.id }}</td>
+										<td>{{ trade.action }}</td>
+										<td>{{ trade.createdAt |date('d-M-Y') }}</td>
+										<td>{{ trade.exchange }}</td>
+										<td>{{ trade.tokenPriceTransaction | amount }}</td>
+										<td>{{ trade.orderMount | amount}}</td>
+										<td class="trades-notes">{{ trade.note }}</td>
+										<td>{{ trade.quantity }}
+											{{tradesByToken['token']}}</td>
+									</tr>
+								{% endfor %}
+							{% endif %}
+						</tbody>
+						<tfoot class="tfoot">
+							<tr>
+								<td></td>
+								<td></td>
+								<td>Total Sell :
+									<span class="total-sell">{{ (tradesByToken['totalSell'])| amount}}</span>
+								</td>
+								<td>Total Buy :
+									<span class="total-buy">{{ (tradesByToken['totalBuy'])| amount}}</span>
+								</td>
+
+								<td>Balance :
+									<span class="balance">{{ (tradesByToken['totalBalance'])| amount}}</span>
+								</td>
+								<td></td>
+								<td></td>
+								<td>Total :
+									<span class="balance">{{ (tradesByToken['tokenQuantity']) | filtreNumber}}
+										{{tradesByToken['token']}}</span>
+								</td>
+							</tr>
+
+						</tfoot>
+					</table>
+
+{# 230080.39480004 #}
+ 230080.39480004
+
+				{% endfor %}
+
+			{% endif %}
+		</main>
+	</div>
+{% endblock %}

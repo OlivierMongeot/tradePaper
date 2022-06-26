@@ -34,6 +34,8 @@ class TokenController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // add date of creation/update
+            // $token->setUpdatedAt(new \DateTimeImmutable());
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($token);
             $entityManager->flush();

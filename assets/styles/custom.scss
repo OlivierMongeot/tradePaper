@@ -30,10 +30,29 @@ body>div.container>main>div>div>table>tbody>tr>td.balance-result.red {
     padding: 5px;
 }
 
-// tfoot>tr {
-//     display: flex;
-//     flex-direction: row;
-//     justify-content: space-between;
-//     text-align: center;
+.text-center {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.logo-token {
+    max-width: 70px;
+    padding: 5px;
+}
+
+#contain-wallet-table {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.logo-token-box {
+    display: flex;
+    justify-content: center;
+}
+
+// .trades-notes {
 //     width: 100%;
 // }

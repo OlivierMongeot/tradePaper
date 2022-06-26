@@ -2,6 +2,8 @@
 
 namespace App\Parser;
 
+use App\Api\LivePriceApi;
+
 class TradeAgregator
 {
 
@@ -29,7 +31,12 @@ class TradeAgregator
         $fullSellTrades = 0;
         $fullBuyTrades = 0;
         $fullBalanceTrades = 0;
-      
+        // $wallet = [];
+        $tokenArray = [];
+        // $totalWalletValue = 0;
+
+
+        
 
         //Add to the array the calcul total mount of trades for sell, buy and balance
         foreach ($tradesByToken as $token => $trade) {
@@ -37,6 +44,7 @@ class TradeAgregator
             $totalBuy = 0;
             $totalBalance = 0;
             $tokenQuantity = 0;
+       
             // dd($trade);
             if (isset($trade['sell'])) {
                 foreach ($trade['sell'] as $sell) {
@@ -67,23 +75,42 @@ class TradeAgregator
             $totalBalance = $totalSell - $totalBuy;
          
             $tradesByToken[$token]['token'] = $token;
+            // $tokenArray[] = $token;
             $tradesByToken[$token]['totalSell'] = $totalSell;
             $tradesByToken[$token]['totalBuy'] = $totalBuy;
             $tradesByToken[$token]['totalBalance'] = $totalBalance;
             $tradesByToken[$token]['tokenQuantity'] = $tokenQuantity;
+           
+            // $wallet[$token] = ['qty' => $tokenQuantity];
 
             if ($token != 'USDT') {
                 $fullSellTrades += $totalSell;
                 $fullBuyTrades += $totalBuy;
                 $fullBalanceTrades += $totalBalance;
             }
-         
         }
+
+        // $liveApiPrice = new LivePriceApi();
+        // $arrayLivePrices = $liveApiPrice->getPrice($tokenArray);
+        // dd($tokenArray);
+        // dd($arrayLivePrices->data);
+
+        // foreach ($arrayLivePrices->data as $token => $price) {
+            // $tradesByToken[$token]['livePrice'] = $price->quote->USD->price;
+            // $tradesByToken[$token]['liveAmount'] = $price->quote->USD->price * $wallet[$token]['qty'];
+            // $totalWalletValue += $price->quote->USD->price * $wallet[$token]['qty'];
+        // }
+ 
+    
+
+   
+   
 
         $totalTrades['fullSellTrades'] = $fullSellTrades;
         $totalTrades['fullBuyTrades'] = $fullBuyTrades;
         $totalTrades['fullBalanceTrades'] = $fullBalanceTrades;
-        
+        // $totalTrades['totalWalletValue'] = $totalWalletValue;
+            // dd($tradesByToken);
         return [$tradesByToken, $totalTrades];
     }
 

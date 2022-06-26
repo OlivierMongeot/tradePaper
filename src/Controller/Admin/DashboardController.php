@@ -6,6 +6,7 @@ use App\Entity\Token;
 use App\Entity\Trade;
 use App\Entity\Users;
 use App\Entity\Action;
+use App\Entity\Wallet;
 use App\Entity\Exchange;
 use App\Entity\Configuration;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,6 +29,7 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {   
         return Dashboard::new()
+        //add link to main page
             ->setTitle('TradingPaper');
     }
 
@@ -40,5 +42,8 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Trades', 'fas fa-list', Trade::class);
         yield MenuItem::linkToCrud('Users', 'fa fa-user', Users::class);
         yield MenuItem::linkToCrud('Configuration', 'fa fa-cog', Configuration::class);
+        yield MenuItem::linkToCrud('Wallet', 'fa fa-wallet', Wallet::class);
+        // link to main page in the bottom menu
+        yield MenuItem::linkToRoute('Retour Home', 'fa fa-home', 'app_main')->setCssClass('text-primary');
     }
 }
