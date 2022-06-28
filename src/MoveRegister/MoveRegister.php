@@ -11,7 +11,10 @@ class MoveRegister
       
         $file = fopen($path, 'a');
         // dd($path);
+        
         $dateTime = new \DateTime('now');
+        // Set Datetime London
+        $dateTime->setTimezone(new \DateTimeZone('Europe/London'));
         $dateTime = $dateTime->format('Y-m-d H:i:s');
         fwrite($file, $dateTime . ' : ' . $message . "\n");
         fclose($file);

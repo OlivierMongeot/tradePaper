@@ -3,20 +3,21 @@ $secondary: #000000;
 // $success : #3A86FF;
 // $info : #FF006E;
 // $light : #8338EC;
-body>div.container>main>div>div>table>tbody>tr>td.balance-result.green {
-    background-color: #000000!important;
-    color: #80f894!important;
-    font-weight: bold;
-}
-
-body>div.container>main>div>div>table>tbody>tr>td.balance-result.red {
-    background-color: #000000!important;
-    color: #FFBE0B!important;
-    font-weight: bold;
-}
-
+// body>div.container>main>div>div>table>tbody>tr>td.balance-result.green {
+//     background-color: #000000!important;
+//     color: #80f894!important;
+//     font-weight: bold;
+// }
+// body>div.container>main>div>div>table>tbody>tr>td.balance-result.red {
+//     background-color: #000000!important;
+//     color: #FFBE0B!important;
+//     font-weight: bold;
+// }
 .title-center {
     text-align: center;
+    background-color: #070707;
+    color: #FFBE0B;
+    margin: 5px;
 }
 
 .box-trade-total {
@@ -53,6 +54,12 @@ body>div.container>main>div>div>table>tbody>tr>td.balance-result.red {
     justify-content: center;
 }
 
-// .trades-notes {
-//     width: 100%;
-// }
+.box-trades {
+    border: 1px solid #000000;
+    border-radius: 4px;
+}
+
+body {
+    background-color: rgb(32, 32, 32)!important;
+    color: white!important;
+}

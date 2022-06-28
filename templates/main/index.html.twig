@@ -15,35 +15,58 @@
 			{# crate table with token , quantity and value #}
 			<div id="contain-wallet-table">
 				<div class="table-responsive">
-					<table class="table table-striped table-sm">
+					<table class="table .table-bordered table-striped table-dark table-hover">
 						<thead>
 							<tr>
 								<th>#</th>
-								{# <th>Token</th> #}
 								<th>Quantity</th>
 								<th>Price</th>
-								<th>Value</th>
+								<th>% 1h</th>
+								<th>% 24h</th>
+								<th>% 7d</th>
+								<th>% 60d</th>
+                                <th>Value</th>
 							</tr>
 						</thead>
 						<tbody>
 
 							{% for token in tokensArray %}
+
 								<tr>
 									<td class="logo-token-box">
 										<div class="logo-token">
-											<img style="height:35px;width:35px" src="/uploads/logos/{{ tokensLinksArray[token.token] }}" alt="{{ token.token }}" class="img-fluid">
+											<img style="height:30px;width:30px" src="/uploads/logos/{{ tokensLinksArray[token.token] }}" alt="{{ token.token }}" class="img-fluid">
 										</div>
 									</td>
-									{# <td></td> #}
-									<td>{{ token.quantity | parseQty }} {{ token.token }}</td>
-									<td>{{ token.livePrice | amount100 }}</td>
-									<td>{{ token.value | amount100}}</td>
+									<td>{{ token.quantity | parseQty }}
+										{{ token.token }}</td>
+									<td>{{ token.livePrice | amount100 }} </td>
+									
+									<td class="color-variation">{{ token.variation_1h |round(2, 'floor') }}
+										%</td>
+									<td class="color-variation">{{ token.variation_24h |round(2, 'floor') }}
+										%</td>
+									<td class="color-variation">{{ token.variation_7d |round(2, 'floor') }}
+										%</td>
+									<td class="color-variation">{{ token.variation_60d |round(2, 'floor') }}
+										%</td>
+                                    <td>{{ token.value  |round(2, 'floor')}} $</td>
 								</tr>
+
 							{% endfor %}
 						</tbody>
 
 					</table>
+					{# {% for token in tokensArray %}
 
+
+						<div class="color-variation">{{ token.variation_1h }}
+							%</div>
+						<div class="color-variation">{{ token.variation_24h }}
+							%</div>
+						<div class="color-variation">{{ token.variation_60d }}
+							%</div>
+					{% endfor %} #}
 
 					{# display Total value additionned #}
 					<div class="py-5 text-center">

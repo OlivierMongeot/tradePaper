@@ -3,101 +3,118 @@
 namespace App\Listener;
 
 use App\Entity\Trade;
-use App\Entity\Wallet;
+use App\Entity\Wallets;
 use App\MoveRegister\MoveRegister;
+use App\Synchroniser\SynchroFullWallet;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 
 
 class TradeCreateListener
 {
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
     public function postPersist(LifecycleEventArgs $event)
     {
-      $this->persistWallet($event);
+        $this->persistWallet($event);
     }
 
 
     public function postUpdate(LifecycleEventArgs $event)
     {
-        //  dd($event);
-    //   $this->updateWallet($event);
+        $entity = $event->getObject();
+        // $this->postUpdateWallet($event);
+        if ($entity instanceof Trade) {
+            $synchro = new SynchroFullWallet($this->em);
+            // $synchro->synchronise();
+            $trade = $event->getObject();
+            dd($trade);
+            // dd($trade->getUser());
+            $user = $trade->getUser();
+            $synchro->synchroniseByUser($user);
+        }
     }
 
 
     public function preUpdate(LifecycleEventArgs $event)
     {
-        //  dd($event);
-      $this->updateWallet($event);
     }
 
 
-    private function persistWallet(LifecycleEventArgs $event){
-
-
+    private function persistWallet(LifecycleEventArgs $event)
+    {
+        $message = new MoveRegister();
+        $message->recordInfo('TradeCreateListener::persistWallet');
         $entity = $event->getObject();
         if ($entity instanceof Trade) {
             // dd($entity);
-            $message = new MoveRegister();
-            $message->recordInfo('Trade created');
-            
+
+            $message->recordInfo('Trade created->update or create Wallet');
+
             $entityManager = $event->getObjectManager();
-        
-            $walletEntity = $entityManager->getRepository(Wallet::class)->findOneBy(['token' => $entity->getToken()->getName()]);
-            $message->recordInfo('Last wallet quantity: ' . $walletEntity->getQuantity());
-            if ($walletEntity) {
-                $message->recordInfo('Update Wallet -> action: ' . $entity->getAction());
-                if($entity->getAction() == 'Achat' || $entity->getAction() == 'Earn' || $entity->getAction() == 'Intérêt'){
-                    $walletEntity->setQuantity($walletEntity->getQuantity() + $entity->getQuantity());
-                } else if($entity->getAction() == 'Vente'){
-                    $walletEntity->setQuantity($walletEntity->getQuantity() - $entity->getQuantity());
-                } else if($entity->getAction() == 'Transfert'){
-                    $walletEntity->setQuantity($walletEntity->getQuantity());
+
+            // Get user 
+            $user = $entity->getUser();
+            // Get wallet user 
+            $walletUserToken = $user->getWallets()->filter(function (Wallets $wallet) use ($entity) {
+                return $wallet->getToken()->getId() == $entity->getToken()->getId();
+            })->first();
+            // dd($walletUser);
+            // Get current token
+
+            $message->recordInfo('User: ' . $user->getUsername() . ' Token: ' . $entity->getToken()->getName());
+            // dump($walletUser);
+
+            // Check if token ever exist in wallet user
+            if ($walletUserToken == !null) {
+                // if exist update quantity
+                // Make addition for action Achat, Earn, Interet
+                if ($entity->getAction()->getId() == 1 || $entity->getAction()->getId() == 6) {
+                    $walletUserToken->setQuantity($walletUserToken->getQuantity() + $entity->getQuantity());
+                } else if ($entity->getAction()->getId() == 2) {
+                    // Make substraction for action Vente
+                    $walletUserToken->setQuantity($walletUserToken->getQuantity() - $entity->getQuantity());
+                } else if ($entity->getAction()->getId() == 3) {
+                    // Make substraction for action Interet
+                    $walletUserToken->setQuantity($walletUserToken->getQuantity() - $entity->getQuantity());
+                } else if ($entity->getAction()->getId() == 4) {
+                    // Make substraction for action Swap
+                    $walletUserToken->setQuantity($walletUserToken->getQuantity() - $entity->getQuantity());
+                } else if ($entity->getAction()->getId() == 5) {
+                    // Make substraction for action Transfer
+                    $walletUserToken->setQuantity($walletUserToken->getQuantity() - $entity->getQuantity());
                 }
-                $entityManager->persist($walletEntity);
+                // Update wallet user
+                $entityManager->persist($walletUserToken);
+                //flush
                 $entityManager->flush();
+                $message->recordInfo('Wallet updated');
             } else {
-                $message->recordInfo('Wallet not found');
-                $message->recordInfo('Create Wallet -> action: ' . $entity->getAction());
-                $walletEntity = new Wallet();
-                $walletEntity->setToken($entity->getToken()->getName());
-                if($entity->getAction() == 'Achat' || $entity->getAction() == 'Earn' || $entity->getAction() == 'Intérêt'){
-                    $walletEntity->setQuantity($entity->getQuantity());
-                } else if($entity->getAction() == 'Vente'){
-                    $walletEntity->setQuantity($entity->getQuantity() * -1);
-                } else if($entity->getAction() == 'Transfert'){
-                    $walletEntity->setQuantity($entity->getQuantity());
+                // if not exist create new wallet
+                $walletUserToken = new Wallets();
+                $walletUserToken->setUser($user);
+                $walletUserToken->setToken($entity->getToken());
+                // Make addition for action Achat, Earn, Interet and soustraction for action Vente
+                if ($entity->getAction()->getId() == 1 || $entity->getAction()->getId() == 6) {
+                    $walletUserToken->setQuantity($entity->getQuantity());
+                } else if ($entity->getAction()->getId() == 2) {
+                    $walletUserToken->setQuantity($entity->getQuantity() * -1);
+                } else if ($entity->getAction()->getId() == 3) {
+                    $walletUserToken->setQuantity($entity->getQuantity() * -1);
+                } else if ($entity->getAction()->getId() == 4) {
+                    $walletUserToken->setQuantity($entity->getQuantity() * -1);
+                } else if ($entity->getAction()->getId() == 5) {
+                    $walletUserToken->setQuantity($entity->getQuantity() * -1);
                 }
-                $entityManager->persist($walletEntity);
+
+                $entityManager->persist($walletUserToken);
                 $entityManager->flush();
-            }   
-            $message->recordInfo('New quantity: ' . $walletEntity->getQuantity() . ' ' . $walletEntity->getToken());
-        }
 
-    }
-
-
-    private function updateWallet(LifecycleEventArgs $event){
-        $entity = $event->getObject();
-            if ($entity instanceof Trade) {
-                $message = new MoveRegister();
-                $message->recordInfo('Trade updated');
-                $entityManager = $event->getObjectManager();
-                $walletEntity = $entityManager->getRepository(Wallet::class)->findOneBy(['token' => $entity->getToken()->getName()]);
-                if ($walletEntity) {
-                    $getCurrentQuantityWallet = $walletEntity->getQuantity();
-                    // Get old Value of Quantity for this trade (before update)
-                    $oldEntity = $entityManager->getRepository(Trade::class)->findOneBy(['id' => $entity->getId()]);
-                    $oldQuantityTrade = $oldEntity->getQuantity();
-                    $getUpdatedQuantityTrade = $entity->getQuantity();
-                    $difference =  $getUpdatedQuantityTrade - $oldQuantityTrade;
-                    $walletEntity->setQuantity($walletEntity->getQuantity() + $difference);
-                    $entityManager->persist($walletEntity);
-                    $entityManager->flush();
-                    $message->recordInfo( 'Token:'. $entity->getToken()->getName() .' | Before action quantity Wallet: ' . $getCurrentQuantityWallet . '| Updated quantity: ' . $getUpdatedQuantityTrade . '| Difference: ' . $difference );
-                } else {
-                //  Lance un mmessage d'erreur
-                throw new \Exception('Wallet not found');
-                }
+                $message->recordInfo('Wallet created');
             }
+        }
     }
-
 }

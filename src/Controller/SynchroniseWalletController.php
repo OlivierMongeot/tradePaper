@@ -14,10 +14,11 @@ class SynchroniseWalletController extends AbstractController
      */
     public function index(): Response
     {
+        // Get user
+        $user = $this->getUser();
         $entityManager = $this->getDoctrine()->getManager();
         $syncroniseWallet = new SynchroFullWallet($entityManager);
-        $syncroniseWallet->synchronise();
-
+        $syncroniseWallet->synchroniseByUser($user);
 
         return $this->render('synchronise_wallet/index.html.twig', [
             'controller_name' => 'SynchroniseWalletController',

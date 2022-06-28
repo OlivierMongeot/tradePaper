@@ -59,9 +59,15 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $nom;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Wallets::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $wallets;
+
     public function __construct()
     {
         $this->trades = new ArrayCollection();
+        $this->wallets = new ArrayCollection();
     }
 
     public function __toString()
@@ -220,6 +226,36 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function setNom(?string $nom): self
     {
         $this->nom = $nom;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Wallets>
+     */
+    public function getWallets(): Collection
+    {
+        return $this->wallets;
+    }
+
+    public function addWallet(Wallets $wallet): self
+    {
+        if (!$this->wallets->contains($wallet)) {
+            $this->wallets[] = $wallet;
+            $wallet->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWallet(Wallets $wallet): self
+    {
+        if ($this->wallets->removeElement($wallet)) {
+            // set the owning side to null (unless already changed)
+            if ($wallet->getUser() === $this) {
+                $wallet->setUser(null);
+            }
+        }
 
         return $this;
     }

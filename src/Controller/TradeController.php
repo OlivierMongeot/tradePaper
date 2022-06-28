@@ -8,6 +8,7 @@ use App\Parser\TradeAgregator;
 use App\Form\ConfigurationType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Entity\User;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -24,11 +25,17 @@ class TradeController extends AbstractController
           $form->handleRequest($request);
   
           $entityManager = $this->getDoctrine()->getManager();
-  
-          $allTrades = $entityManager->getRepository(Trade::class)->findAll();
-  
+          
+          /**
+           * @var User $user
+           */
+            $user = $this->getUser();
+      
+            // Find all Trade by user id
+            $allTradesUser = $entityManager->getRepository(Trade::class)->findBy(array('user' => $user->getId()));
+      
           $agregator = new TradeAgregator();
-          $tradesByToken = $agregator->agregateData($allTrades);
+          $tradesByToken = $agregator->agregateData($allTradesUser);
    
   
           if ($form->isSubmitted() && $form->isValid()) {

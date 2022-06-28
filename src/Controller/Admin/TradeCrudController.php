@@ -38,7 +38,7 @@ class TradeCrudController extends AbstractCrudController
             MoneyField::new('token_price_transaction')->setCurrency('USD')->setLabel('Token Price')->setColumns('col-sm-6 col-lg-3 col-xxl-3')->setNumDecimals(6),
             MoneyField::new('fee')->setCurrency('USD')->setColumns('col-sm-6 col-lg-3 col-xxl-3')->setNumDecimals(3)->hideOnIndex(),
             AssociationField::new('exchange')->setColumns('col-sm-6 col-lg-3 col-xxl-3'),
-            NumberField::new('IdBuyTransaction')->setColumns('col-sm-6 col-lg-6 col-xxl-6')->setLabel('Id BUY'),
+            NumberField::new('IdBuyTransaction')->setColumns('col-sm-6 col-lg-6 col-xxl-6')->setLabel('Id BUY')->onlyOnForms(),
             MoneyField::new('order_mount')->setCurrency('USD')->setColumns('col-sm-6 col-lg-6 col-xxl-6')->setNumDecimals(3),
             TextEditorField::new('note')->setColumns('col-sm-6 col-lg-6 col-xxl-6')->hideOnIndex(),
         ];

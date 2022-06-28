@@ -58,17 +58,13 @@ class Token
      */
     private $randomNumber;
 
-    // /**
-    //  * @ORM\Column(type="date", nullable=true)
-    //  * @var \Date
-    //  */
-    // private $updated_at;
-
+   
 
     public function __construct()
     {
         $this->trades = new ArrayCollection();
         $this->exchange = new ArrayCollection();
+        $this->wallets = new ArrayCollection();
     }
 
     public function __toString()
@@ -202,17 +198,7 @@ class Token
         return $this;
     }
 
-    // public function getUpdatedAt()
-    //     {
-    //     return $this->updated_at;
-    // }
 
-    // public function setUpdatedAt($updated_at): self
-    // {
-    //     $this->updated_at = $updated_at;
-
-    //     return $this;
-    // }
 
     public function getRandomNumber(): ?float
     {
@@ -227,4 +213,7 @@ class Token
     }
 
 
+  
+
 }
+

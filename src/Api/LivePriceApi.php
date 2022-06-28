@@ -24,6 +24,7 @@ class LivePriceApi
      
         // Serialise the array of tokens into a string
         $tokens = implode(',', $tokens);
+        // dd($tokens);
         $url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest';
         // $tokens = 'BTC,ETH,LTC';
         $parameters = [

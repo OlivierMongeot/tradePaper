@@ -43,7 +43,7 @@ class TokenCreateListener
         $entity = $event->getObject();
         if ($entity instanceof Token) {
             // dump($event);
-            $entity = $event->getObjectManager();
+            // $entity = $event->getObjectManager();
             // dd($entity);:
         // Get old name of token
         // $token
